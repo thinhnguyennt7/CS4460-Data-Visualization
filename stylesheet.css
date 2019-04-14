@@ -8,60 +8,68 @@ text {
   padding-left: 20px;
 }
 
-.graph {
-  padding: 10px;
+path:hover {
+	fill-opacity: .7;
 }
 
-.force-link {
-  opacity: 0.2;
+/* Tooltip */
+div.tooltip {
+ 	position: absolute;
+	text-align: center;
+	width: 60px;
+	height: 28px;
+	padding: 2px;
+	font: 12px sans-serif;
+	background: white;
+	border: 0px;
+	border-radius: 8px;
+	pointer-events: none;
 }
 
-.force-link-selected {
-  opacity: 1;
+/* Font Style */
+body {
+	font: 11px sans-serif;
 }
 
-.force-node {
-  opacity: 0.3;
+/* Legend Position Style */
+.legend {
+	position:absolute;
+	left:800px;
+	top:350px;
 }
 
-.force-selected-secondary {
-  opacity: 0.7;
-  stroke: #888;
-  stroke-width: 2;
+#tooltip-container {
+	position: absolute;
+	background-color: white;
+	border-radius: 50px;
+  border: 1px solid black;
+	padding: 20px;
+	display: none;
 }
 
-.force-hover {
-  opacity: 0.8;
-  stroke: #555;
-  stroke-width: 2;
+.tooltip_bold {
+  font-weight: bold;
 }
 
-.force-selected-primary {
-  opacity: 1;
-  stroke: black;
-  stroke-width: 2;
+.tooltip_left_5px {
+	margin-left: 5px;
 }
 
-.d3-tip {
-  line-height: 1;
-  padding: 6px;
-  background: #eee;
-  border-radius: 4px;
+.tooltip_left_2px {
+	margin-left: 2px;
 }
 
-.d3-tip h5{
-  font-size: 15px;
-  font-weight: 600;
-  margin: 2px 10px 4px 2px;
-}
-.d3-tip thead td {
-  border-bottom: 1px solid #ccc;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 10px 2px 2px;
+.tooltip_float {
+	margin-left: 5px;
+	float: right;
 }
 
-.d3-tip td {
-  font-size: 14px;
-  padding: 2px 10px 2px 2px;
+.centralize {
+	width:100%;
+	text-align:center;
+	float: right;
+}
+
+.lightColor {
+	color: #b6b8ba;
 }
