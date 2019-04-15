@@ -35,10 +35,18 @@ d3.csv("./collegesLocation.csv", (data) => {
         .attr("d", path)
         .style("stroke", "#fff")
         .style("stroke-width", "1")
-        // .text((d) => { return d})
-        .style("fill", (d) => {
+        .style("fill", () => {
             return 'rgb(69,173,168)';
         });
+
+        // Add text to state
+        // svg.selectAll("path")
+        //     .data(json.features)
+        //     .append("text")
+        //     .attr("x", 25)
+        //     .attr("y", 10)
+        //     .attr("dy", ".40em")
+        //     .text((d) => { return d.properties.name });
 
         // Not in US state
         var avoids = ["Aguadilla", "Null", "Ponce", null];
