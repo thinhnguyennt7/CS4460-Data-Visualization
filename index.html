@@ -5,9 +5,10 @@
 		<link href="stylesheet.css" type="text/css" rel="stylesheet"/>
 		<script src="http://d3js.org/d3.v3.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	</head>
 	   <body>
-			<!-- Title -->
+			<!-- Main Title -->
 			<text style="font-size:30px;">CS 4460 P5</text>
 			<text style="font-size:22px; color: #a5e291;">Thinh Nguyen & Nhat Lan</text><br><br><br><br>
 
@@ -17,18 +18,61 @@
 				<text style="font-size:15px;">Hover on the circle dot to view more</text>
 				<script type="text/javascript" src="map.js"></script>
 				<div id="tooltip-container"></div>
-			</div><br><br><br><br><hr>
+			</div><br><br><br><hr>
 
 			<!-- Salary Chart -->
 			<div class="salaryChart">
-				<text style="font-size:20px;">Salary earned after graduated</text>
+				<text style="font-size:20px;">Salary earned after 8 years</text>
+				<text style="font-size:15px;">Hover on the circle dot to view more</text><br>
 				<script type="text/javascript" src="salary.js"></script>
-			</div><br><br><br><br><hr>
+			</div><br><br><hr>
 
 			<!-- Pie Chart Student Race Comparison -->
-			<div class="raceChart">
-				<text style="font-size:20px;">Student Race Comparison</text>
-				<script type="text/javascript" src="raceChart.js"></script>
+            <div class="debt_chart">
+                <text style="font-size:20px; float: left;">Student Debt of School Universities</text><br><br>
+				<text style="font-size:15px;">To select multiple field hold down Command</text><br>
+				<div class="row leftPadding">
+					<div class="col">
+						<label style="text-align: center;">
+							Select Type
+							<select class="custom-select mr-sm-2" id="controlTypeFilter" multiple="multiple">
+							</select>
+						</label>
+					</div>
+					<div class="col-6 rateChart">
+						<script type="text/javascript" src="raceChart.js"></script>
+					</div>
+				</div>
+				<div class="row leftPadding">
+					<div class="col">
+						<label style="text-align: center;">
+							Select Areas
+							<select class="custom-select mr-sm-2" id="areasFilter" multiple="multiple">
+							</select>
+						</label>
+					</div>
+				</div>
+				<div class="row leftPadding">
+					<div class="col">
+						<label style="text-align: center;">
+							Admission Rate
+							<select class="custom-select mr-sm-2" id="admissionFilter" multiple="multiple">
+							</select>
+						</label>
+					</div>
+				</div>
+				<div class="row leftPadding">
+					<div class="col">
+						<label style="text-align: center;">
+							Average Tuition
+							<select class="custom-select mr-sm-2" id="averageFilter" multiple="multiple">
+							</select>
+						</label>
+					</div>
+				</div>
+				<div class="row leftPadding">
+					<button id="filterNow">Filter</button>
+				</div>
 			</div>
 		</body>
 </html>
