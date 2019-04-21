@@ -4,9 +4,11 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
     settingUpDropdown('#areasFilter', '#controlTypeFilter', '#admissionFilter', '#averageFilter', data);
 });
 
-var WIDTH = 600, HEIGHT = 600;
 var configure = {top: 50, right: 50, bottom: 50, left: 50}
 var radius = 5;
+var width = d3.select(".rateChart").style('width').split("px");
+var WIDTH = Math.round(Number(width[0]));
+var HEIGHT = 600;
 
 // Chart draw begin
 d3.csv("./P5 Datasets/colleges.csv", (data) => {
@@ -90,6 +92,7 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
         });
     })
     .on("click", (d) => {
+        $('#showDetail').css({'display':'block'});
         updateSchoolDetailSingleView(d);
     })
     .append("title").text((d) => {
@@ -116,7 +119,7 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
             .attr('class','label')
             .attr('transform','rotate(-90)')
             .attr('x',-WIDTH / 2 / 2 + configure.top)
-            .attr('y',5)
+            .attr('y', -configure.left)
             .attr('dy','.71em')
             .style('text-anchor','end')
             .text('Admission Rate %')
@@ -164,57 +167,4 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
                 return 0;
             })
         })
-
-        // BRUSH
-        // var brush = d3.svg.brush()
-        //     .x(xScale)
-        //     .y(yScale)
-        //     .on("brushstart", handleBrushStart)
-        //     .on('brush', handleBrushMove)
-        //     .on('brushend', handleBrushEnd)
-
-        // var container1 = chart.append("g").attr("class", "brush")
-        //     .call(brush);
-
-        // chart.selectAll(".end").data(brush.extent())
-        //     .enter()
-        //     .append("g")
-        //     .attr("class", () => {
-        //         return "end";
-        //     })
-
-        // function handleBrushStart() {
-        //     console.log("Brush Start");
-        // }
-
-        // function handleBrushMove() {
-        //     // container1.call(brush.clear());
-        //     var sel = d3.event.selection;
-        //     console.log("BRUSHING");
-        //     if (!sel) return;
-
-        //     var e = brush.extent();
-        //     svg.selectAll("circle").filter((d) => {
-        //     return e[0][0] > d.TUITION || d.TUITION > e[1][0]
-        //         || e[0][1] > d.RATE || d.RATE > e[1][1];
-        //     }).classed("selected", true);
-        // }
-
-        // function handleBrushEnd() {
-        //     var sel = d3.event.selection;
-        //     if (!sel) {
-        //         d3.selectAll("circle").classed("selected", false);
-        //     }
-        // }
-
-        // function highlight() {
-        //     chart.selectAll(".end").data(extent).attr("transform", (d) => {
-        //         chart.selectAll("circle").classed("selected", false);
-        //         //highlight brushed circles
-        //         chart.selectAll("circle").filter((d) => {
-        //             return extent[0][0] > d.TUITION || d.TUITION > extent[1][0] || extent[0][1] > d.RATE || d.RATE > extent[1][1];
-        //             console.log("brushing");
-        //         }).classed("selected", true);
-        //     });
-        // }
 })
