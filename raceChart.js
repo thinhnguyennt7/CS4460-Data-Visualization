@@ -92,7 +92,6 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
         });
     })
     .on("click", (d) => {
-        $('#showDetail').css({'display':'block'});
         updateSchoolDetailSingleView(d);
     })
     .append("title").text((d) => {
