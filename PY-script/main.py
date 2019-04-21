@@ -1,3 +1,5 @@
+## HELPER PYTHON SCRIPT I WROTE TO GENEREATE LONGITUDE AND LATITUDE BY USING GOOGLE API
+
 from googlegeocoder import GoogleGeocoder
 import csv
 
