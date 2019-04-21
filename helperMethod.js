@@ -190,6 +190,8 @@ function updateSchoolDetailSingleView(schoolData) {
     htmlView.append('tr')
         .text("Average Tuition: $" + schoolData["TUITION"])
     htmlView.append('tr')
+        .text("Average Tuition in 4 years: $" + schoolData["TUITION"] * 4)
+    htmlView.append('tr')
         .text("Undergraduate Population: " + schoolData["POPULATION"])
 }
 
