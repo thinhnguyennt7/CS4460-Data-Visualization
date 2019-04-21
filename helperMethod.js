@@ -192,3 +192,24 @@ function updateSchoolDetailSingleView(schoolData) {
     htmlView.append('tr')
         .text("Undergraduate Population: " + schoolData["POPULATION"])
 }
+
+function hoverViewHTMLGenerator(data, color, html) {
+    html += "<div style=\"color: " + color + "\">";
+    html += "<span class=\"tooltip_bold centralize\">";
+    html += data.schoolName + "</span><br>";
+    html += "<span class=\"tooltip_bold centralize lightColor\">";
+    html += data.control + "</span>";
+    html += "<span class=\"centralize\" >";
+    html += data.state + "</span><br><hr>";
+    html += "<span class=\"tooltip_bold centralize\">";
+    html += "Admission Rate: " + data.admission + "</span><br><br>";
+    html += "<span class=\"tooltip_bold\">";
+    html += "ACT " + "</span>";
+    html += "<span class=\"tooltip_bold tooltip_float\">";
+    html += "SAT " + "</span><br>";
+    html += "<span class=\"tooltip_bold tooltip_left_5px\">";
+    html += data.act + "</span>";
+    html += "<span class=\"tooltip_bold tooltip_left_2px tooltip_float\">";
+    html += data.sat + "</span></div>";
+    return html;
+}
