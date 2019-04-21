@@ -42,9 +42,10 @@ body {
 	position: absolute;
 	background-color: white;
 	border-radius: 50px;
-  border: 1px solid black;
+  	border: 1px solid black;
 	padding: 20px;
 	display: none;
+	z-index: 9999;
 }
 
 .tooltip_bold {
