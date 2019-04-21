@@ -1,134 +1,194 @@
-function Interpolate(start, end, steps, count) {
-    var s = start,
-        e = end,
-        final = s + (((e - s) / steps) * count);
-    return Math.floor(final);
+// Helper method to get out the list of tuition by filter
+function tuitionChecking(data, averageTuitionSelected) {
+    if (averageTuitionSelected.length) {
+        var actualTuitionVal = data["TUITION"];
+        var rateRange = '';
+        switch(true) {
+            case (actualTuitionVal <= 10000):
+                rateRange = '0 - $10,000';
+                break;
+            case (actualTuitionVal >= 10000 && actualTuitionVal <= 20000):
+                rateRange = '10,000 - $20,000';
+                break;
+            case (actualTuitionVal >= 20000 && actualTuitionVal <= 30000):
+                rateRange = '20,000 - $30,000';
+                break;
+            case (actualTuitionVal >= 30000 && actualTuitionVal <= 40000):
+                rateRange = '30,000 - $40,000';
+                break;
+            case (actualTuitionVal >= 40000 && actualTuitionVal <= 50000):
+                rateRange = '40,000 - $50,000';
+                break;
+            case (actualTuitionVal >= 50000 && actualTuitionVal <= 60000):
+                rateRange = '50,000 - $60,000';
+                break;
+            case (actualTuitionVal >= 60000 && actualTuitionVal <= 70000):
+                rateRange = '60,000 - $70,000';
+                break;
+            case (actualTuitionVal >= 70000 && actualTuitionVal <= 80000):
+                rateRange = '70,000 - $80,000';
+                break;
+            case (actualTuitionVal >= 80000 && actualTuitionVal <= 90000):
+                rateRange = '80,000 - $90,000';
+                break;
+            default:
+                rateRange = '90,000 - $100,000';
+                break;
+        }
+        return averageTuitionSelected.includes(rateRange);
+    }
+    return true;
 }
 
-function Color(_r, _g, _b) {
-    var r, g, b;
-    var setColors = function (_r, _g, _b) {
-        r = _r;
-        g = _g;
-        b = _b;
-    };
-
-    setColors(_r, _g, _b);
-    this.getColors = function () {
-        var colors = {
-            r: r,
-            g: g,
-            b: b
-        };
-        return colors;
-    };
+// Helper method to get out the list of region by filter
+function regionChecking(data, regionSelected) {
+    if (regionSelected.length) {
+        return regionSelected.includes(data["REGION"]);
+    }
+    return true;
 }
 
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
+// Helper method to get out the list of admission by filter
+function admissionChecking(data, admissionWeightSelected) {
+    if (admissionWeightSelected.length) {
+        var actualAdmissionVal = data["RATE"] * 100;
+        var rateRange = '';
+
+        switch(true) {
+            case (actualAdmissionVal <= 10):
+                rateRange = '0.0 - 10%';
+                break;
+            case (actualAdmissionVal >= 10 && actualAdmissionVal <= 20):
+                rateRange = '10 - 20%';
+                break;
+            case (actualAdmissionVal >= 20 && actualAdmissionVal <= 30):
+                rateRange = '20 - 30%';
+                break;
+            case (actualAdmissionVal >= 30 && actualAdmissionVal <= 40):
+                rateRange = '30 - 40%';
+                break;
+            case (actualAdmissionVal >= 40 && actualAdmissionVal <= 50):
+                rateRange = '40 - 50%';
+                break;
+            case (actualAdmissionVal >= 50 && actualAdmissionVal <= 60):
+                rateRange = '50 - 60%';
+                break;
+            case (actualAdmissionVal >= 60 && actualAdmissionVal <= 70):
+                rateRange = '60 - 70%';
+                break;
+            case (actualAdmissionVal >= 70 && actualAdmissionVal <= 80):
+                rateRange = '70 - 80%';
+                break;
+            case (actualAdmissionVal >= 80 && actualAdmissionVal <= 90):
+                rateRange = '80 - 90%';
+                break;
+            default:
+                rateRange = '90 - 100%';
+                break;
+        }
+        return admissionWeightSelected.includes(rateRange);
+    }
+    return true;
 }
 
-function getPositionDetail(data, index) {
-    let promises = [];
-    while (promises.length == 0 && indexToBegin > 0) {
-        for (let i = index; i < data.length; i++) {
-            promises.push(new Promise((resolve) => {
-                asyncCallHelper(data[i].Name).then((response) => {
-                    console.log(i, response.status);
-                    if (response.status == "Success") {
-                        resolve(response.data);
-                    } else {
-                        getPositionDetail(data, i);
-                    }
-                });
-            }))
-            // if (++processes >= data.length) {
-            //     // return {"success": Promise.all(promises), "fail" : Promise.all(lost_addresses)};
-            //     return Promise.all(promises);
-            // }
+// Helper method to get out the list of control type by filter
+function controlTypeChecking(data, controlTypeSelected) {
+    if (controlTypeSelected.length) {
+        return controlTypeSelected.includes(data["CONTROL"]);
+    }
+    return true;
+}
+
+// Helper method to update data from the list view
+function updateData(data) {
+    d3.select(".showSchoolDetail").remove();
+}
+
+function settingUpDropdown(area, control, admission, tuition, data) {
+    var duplicatedSet = new Set();
+    var set = new Set();
+    var areaOption = '<option selected>Choose...</option>';
+    var controlOption = '<option selected>Choose...</option>';
+    for (var i = 0; i < data.length; i++) {
+        var currentRegion = data[i].Region;
+        var currentControl = data[i].Control;
+        var currentAverage = data[i]['Average Cost'];
+
+        // Check for duplicate control
+        if (!set.has(currentControl)) {
+            set.add(currentControl);
+            controlOption += '<option value="'+ currentControl + '">' + currentControl + '</option>';
+        }
+
+        // Check for duplicate region
+        if (!duplicatedSet.has(currentRegion)) {
+            duplicatedSet.add(currentRegion);
+            areaOption += '<option value="'+ currentRegion + '">' + currentRegion + '</option>';
         }
     }
+
+    var admission = {
+        "0" : "0.0 - 10%",
+        "1" : "10 - 20%",
+        "2" : "20 - 30%",
+        "3" : "30 - 40%",
+        "4" : "40 - 50%",
+        "5" : "50 - 60%",
+        "6" : "60 - 70%",
+        "7" : "70 - 80%",
+        "8" : "80 - 90%",
+        "9" : "90 - 100%"
+    }
+
+    var averageCost = {
+        "0" : "0 - $10,000",
+        "1" : "10,000 - $20,000",
+        "2" : "20,000 - $30,000",
+        "3" : "30,000 - $40,000",
+        "4" : "40,000 - $50,000",
+        "5" : "50,000 - $60,000",
+        "6" : "60,000 - $70,000",
+        "7" : "70,000 - $80,000",
+        "8" : "80,000 - $90,000",
+        "9" : "90,000 - $100,000"
+    }
+
+    var admissionOption = '<option selected>Choose...</option>';
+    var tuitionOption = '<option selected>Choose...</option>';
+    for (var key in admission) {
+        admissionOption += '<option value="'+ key + '">' + admission[key] + '</option>';
+        tuitionOption += '<option value="'+ key + '">' + averageCost[key] + '</option>';
+    }
+
+    $('#areasFilter').append(areaOption);
+    $('#controlTypeFilter').append(controlOption);
+    $('#admissionFilter').append(admissionOption);
+    $('#averageFilter').append(tuitionOption);
 }
 
-async function asyncCallHelper(schoolName) {
-    return await new Promise(resolve => {
-        var geocoder = new google.maps.Geocoder();
-        var holder = {"schoolName": schoolName, "state": "", "latitude" : 0, "longitude": 0};
-        geocoder.geocode({"address": schoolName}, (result, status) => {
-            if (status == google.maps.GeocoderStatus.OK) {
-                var i = 0;
-                var state = "";
-                while (!states_hash.hasOwnProperty(state) && i < 6) {
-                    state = result[0].address_components[i].long_name;
-                    i += 1;
-                }
-                holder.state = state;
-                holder.latitude = result[0].geometry.location.lat();
-                holder.longitude = result[0].geometry.location.lng();
-                resolve({"data": holder, "status" : "Success"});
-            } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-                resolve({"data": schoolName, "status" : "Fail"});
-            }
-        });
-    });
-}
+// Helper method to update single click view on chart
+function updateSchoolDetailSingleView(schoolData) {
+    // Clean up the view
+    d3.select(".schoolDetailView").remove();
+    var tableView = d3.select('#showSchoolDetail')
+        .append("table")
+        .attr("class", "schoolDetailView");
 
-var states_hash =
-  {
-    'Alabama': 'AL',
-    'Alaska': 'AK',
-    'Arizona': 'AZ',
-    'Arkansas': 'AR',
-    'California': 'CA',
-    'Colorado': 'CO',
-    'Connecticut': 'CT',
-    'Delaware': 'DE',
-    'District Of Columbia': 'DC',
-    'Florida': 'FL',
-    'Georgia': 'GA',
-    'Guam': 'GU',
-    'Hawaii': 'HI',
-    'Idaho': 'ID',
-    'Illinois': 'IL',
-    'Indiana': 'IN',
-    'Iowa': 'IA',
-    'Kansas': 'KS',
-    'Kentucky': 'KY',
-    'Louisiana': 'LA',
-    'Maine': 'ME',
-    'Maryland': 'MD',
-    'Massachusetts': 'MA',
-    'Michigan': 'MI',
-    'Minnesota': 'MN',
-    'Mississippi': 'MS',
-    'Missouri': 'MO',
-    'Montana': 'MT',
-    'Nebraska': 'NE',
-    'Nevada': 'NV',
-    'New Hampshire': 'NH',
-    'New Jersey': 'NJ',
-    'New Mexico': 'NM',
-    'New York': 'NY',
-    'North Carolina': 'NC',
-    'North Dakota': 'ND',
-    'Ohio': 'OH',
-    'Oklahoma': 'OK',
-    'Oregon': 'OR',
-    'Pennsylvania': 'PA',
-    'Rhode Island': 'RI',
-    'South Carolina': 'SC',
-    'South Dakota': 'SD',
-    'Tennessee': 'TN',
-    'Texas': 'TX',
-    'Utah': 'UT',
-    'Vermont': 'VT',
-    'Virginia': 'VA',
-    'Washington': 'WA',
-    'Wisconsin': 'WI',
-    'Wyoming': 'WY'
-  }
+    var htmlView = tableView
+        .append("htmlView")
+
+    htmlView.append('tr')
+        .text(schoolData["Name"])
+        .style("font-weight", "bold")
+        .style("font-size", "20px")
+    htmlView.append('tr')
+        .text("School Type: " + schoolData["CONTROL"])
+    htmlView.append('tr')
+        .text("School Region: " + schoolData["REGION"])
+    htmlView.append('tr')
+        .text("Admission Rate: " + schoolData["RATE"] * 100 + "%")
+    htmlView.append('tr')
+        .text("Average Tuition: $" + schoolData["TUITION"])
+    htmlView.append('tr')
+        .text("Undergraduate Population: " + schoolData["POPULATION"])
+}
