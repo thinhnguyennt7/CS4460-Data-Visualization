@@ -3,8 +3,10 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
 
     var body = d3.select(".salaryChart");
     var configure = {top: 50, right: 50, bottom: 50, left: 50}
-    var HEIGHT = 700, WIDTH = 1200;
-    var radius = 5;
+    var HEIGHT = 700;
+    var width = d3.select(".salaryChart").style('width').split("px");
+    var WIDTH = Math.round(Number(width[0])) - 200;
+    var radius = 7;
 
     var meanEarn = 'Mean Earnings 8 years After Entry';
     var numberOfEmploy = 'Number of Employed 8 years after entry';
@@ -98,9 +100,8 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
             .append('text')
             .attr('class','label')
             .attr('transform','rotate(-90)')
-            .attr('x',-WIDTH / 2 / 2 + configure.top)
+            .attr('x',-WIDTH / 2 / 2)
             .attr('y',5)
             .attr('dy','.71em')
-            .style('text-anchor','end')
             .text('Number of Employed 8 years after entry')
 });
