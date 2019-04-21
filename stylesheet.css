@@ -34,7 +34,7 @@ body {
 /* Legend Position Style */
 .legend {
 	position:absolute;
-	left:800px;
+	right: 30%;
 	top:350px;
 }
 
@@ -99,4 +99,31 @@ body {
 .selected {
 	stroke: red;
 	fill:red;
+}
+
+.columnSeperate {
+  float: left;
+  padding: 10px;
+}
+
+.rateChart {
+	width: 55%;
+}
+
+#filterInfo {
+	width: 12%;
+}
+
+#showSchoolDetail {
+	width: 33;
+}
+
+#filterNow {
+	display: block;
+	margin: 0 auto;
+}
+
+.showDetail {
+	display: block;
+	margin: 0 auto;
 }
