@@ -1,67 +1,7 @@
 
 // Setting up data
 d3.csv("./P5 Datasets/colleges.csv", (data) => {
-
-    var duplicatedSet = new Set();
-    var set = new Set();
-    var areaOption = '<option selected>Choose...</option>';
-    var controlOption = '<option selected>Choose...</option>';
-    for (var i = 0; i < data.length; i++) {
-
-        var currentRegion = data[i].Region;
-        var currentControl = data[i].Control;
-        var currentAverage = data[i]['Average Cost'];
-
-        // Check for duplicate control
-        if (!set.has(currentControl)) {
-            set.add(currentControl);
-            controlOption += '<option value="'+ currentControl + '">' + currentControl + '</option>';
-        }
-
-        // Check for duplicate region
-        if (!duplicatedSet.has(currentRegion)) {
-            duplicatedSet.add(currentRegion);
-            areaOption += '<option value="'+ currentRegion + '">' + currentRegion + '</option>';
-        }
-    }
-
-    var admission = {
-        "0" : "0.0 - 10%",
-        "1" : "10 - 20%",
-        "2" : "20 - 30%",
-        "3" : "30 - 40%",
-        "4" : "40 - 50%",
-        "5" : "50 - 60%",
-        "6" : "60 - 70%",
-        "7" : "70 - 80%",
-        "8" : "80 - 90%",
-        "9" : "90 - 100%"
-    }
-
-    var averageCost = {
-        "0" : "0 - $10,000",
-        "1" : "10,000 - $20,000",
-        "2" : "20,000 - $30,000",
-        "3" : "30,000 - $40,000",
-        "4" : "40,000 - $50,000",
-        "5" : "50,000 - $60,000",
-        "6" : "60,000 - $70,000",
-        "7" : "70,000 - $80,000",
-        "8" : "80,000 - $90,000",
-        "9" : "90,000 - $100,000"
-    }
-
-    var admissionOption = '<option selected>Choose...</option>';
-    var tuitionOption = '<option selected>Choose...</option>';
-    for (var key in admission) {
-        admissionOption += '<option value="'+ key + '">' + admission[key] + '</option>';
-        tuitionOption += '<option value="'+ key + '">' + averageCost[key] + '</option>';
-    }
-
-    $('#areasFilter').append(areaOption);
-    $('#controlTypeFilter').append(controlOption);
-    $('#admissionFilter').append(admissionOption);
-    $('#averageFilter').append(tuitionOption);
+    settingUpDropdown('#areasFilter', '#controlTypeFilter', '#admissionFilter', '#averageFilter', data);
 });
 
 var WIDTH = 600, HEIGHT = 600;
@@ -77,6 +17,7 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
         data[i].REGION = String(current.Region);
         data[i].RATE = Number(current["Admission Rate"]);
         data[i].TUITION = Number(current["Average Cost"]);
+        data[i].POPULATION = Number(current["Undergrad Population"]);
     }
 
     var colorScale = d3.scale.category10()
@@ -102,50 +43,58 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
         .ticks(10)
         .orient("left")
 
+    var populationLists = [];
+    data.forEach(row => {
+        populationLists.push(row["Undergrad Population"]);
+    });
+    var maxPopulation = d3.max(populationLists);
+	var populationScale = d3.scale.linear().domain([0, maxPopulation]).range([2, 6]);
+
+
     var chart = d3.select(".rateChart")
-        .append("svg")
+        .append("svg:svg")
         .attr("width", WIDTH + configure.left + configure.right)
         .attr("height", HEIGHT + configure.top + configure.bottom)
         .append("g")
         .attr("transform", "translate(" + configure.left + ',' + configure.top + ')')
 
-    // BRUSH
-    var brush = chart.append("g")
-        .attr("class", "brush");
-
     chart.selectAll("circle")
-        .data(data)
-        .enter()
-        .append("circle")
-        // .attr("id", (d, i) => {
-        //     return i;
-        // })
-        .attr("cx", (d) => {
-            return xScale(d.TUITION);
-        })
-        .attr("cy", (d) => {
-            return yScale(d.RATE);
-        })
-        .attr("r", radius)
-        .attr('stroke','white')
-        .attr("fill", (d, i) => {
-            return colorScale(i);
-        })
-        .on("mouseover", function (d) {
-            d3.select(this)
-            .transition()
-            .duration(800).style("opacity", 1)
-            .attr("r", radius * 2).ease("elastic");
-        })
-        .on("mouseout", function(d) {
-            d3.select(this)
-            .transition()
-            .duration(500)
-            .attr("r", radius)
-        })
-        .on("click", function(d) {
-            // TODO
-        })
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => {
+        return xScale(d.TUITION);
+    })
+    .attr("cy", (d) => {
+        return yScale(d.RATE);
+    })
+    .attr("r", (d) => {
+        return populationScale(d["Undergrad Population"]);
+    })
+    .attr('stroke','white')
+    .attr("fill", (d, i) => {
+        return colorScale(i);
+    })
+    .on("mouseover", function (d) {
+        d3.select(this)
+        .transition()
+        .duration(800).style("opacity", 1)
+        .attr("r", radius * 4).ease("elastic");
+    })
+    .on("mouseout", function(d) {
+        d3.select(this)
+        .transition()
+        .duration(500)
+        .attr("r", (d) => {
+            return populationScale(d["Undergrad Population"]);
+        });
+    })
+    .on("click", (d) => {
+        updateSchoolDetailSingleView(d);
+    })
+    .append("title").text((d) => {
+        return 'School Name: ' + d.Name + '\nAdmission Rate: ' + d['Admission Rate'] + '\nAverage Tuition: ' + d['Average Cost'];
+    })
 
         chart.append("g")
             .attr("class", "axis")
@@ -171,4 +120,101 @@ d3.csv("./P5 Datasets/colleges.csv", (data) => {
             .attr('dy','.71em')
             .style('text-anchor','end')
             .text('Admission Rate %')
+
+        // Select Button
+        var filterButton = d3.select("#filterNow");
+        filterButton.on("click", () => {
+
+            // Clear out the table detail view show
+            d3.select("table").remove();
+		    d3.select(".detail-table").remove();
+
+            var areaList = [], admissionList = [], tuitionList = [], controlList = [];
+            var avoidVal = "Choose...";
+
+            $("#areasFilter").find(":selected").each(function() {
+                if ($(this).val() != avoidVal) {
+                    areaList.push($(this).val());
+                }
+            });
+
+            $("#controlTypeFilter").find(":selected").each(function() {
+                if ($(this).val() != avoidVal) {
+                    controlList.push($(this).val());
+                }
+            });
+
+            $("#admissionFilter").find(":selected").each(function() {
+                if ($(this).val() != avoidVal) {
+                    admissionList.push($(this).text());
+                }
+            });
+
+            $("#averageFilter").find(":selected").each(function() {
+                if ($(this).val() != avoidVal) {
+                    tuitionList.push($(this).text());
+                }
+            });
+
+            chart.selectAll("circle").attr('r', (data) => {
+                // If we need to filter something
+				if (regionChecking(data, areaList) && admissionChecking(data, admissionList) && controlTypeChecking(data, controlList) && tuitionChecking(data, tuitionList)) {
+                    return populationScale(data["POPULATION"]);
+                }
+                return 0;
+            })
+        })
+
+        // BRUSH
+        // var brush = d3.svg.brush()
+        //     .x(xScale)
+        //     .y(yScale)
+        //     .on("brushstart", handleBrushStart)
+        //     .on('brush', handleBrushMove)
+        //     .on('brushend', handleBrushEnd)
+
+        // var container1 = chart.append("g").attr("class", "brush")
+        //     .call(brush);
+
+        // chart.selectAll(".end").data(brush.extent())
+        //     .enter()
+        //     .append("g")
+        //     .attr("class", () => {
+        //         return "end";
+        //     })
+
+        // function handleBrushStart() {
+        //     console.log("Brush Start");
+        // }
+
+        // function handleBrushMove() {
+        //     // container1.call(brush.clear());
+        //     var sel = d3.event.selection;
+        //     console.log("BRUSHING");
+        //     if (!sel) return;
+
+        //     var e = brush.extent();
+        //     svg.selectAll("circle").filter((d) => {
+        //     return e[0][0] > d.TUITION || d.TUITION > e[1][0]
+        //         || e[0][1] > d.RATE || d.RATE > e[1][1];
+        //     }).classed("selected", true);
+        // }
+
+        // function handleBrushEnd() {
+        //     var sel = d3.event.selection;
+        //     if (!sel) {
+        //         d3.selectAll("circle").classed("selected", false);
+        //     }
+        // }
+
+        // function highlight() {
+        //     chart.selectAll(".end").data(extent).attr("transform", (d) => {
+        //         chart.selectAll("circle").classed("selected", false);
+        //         //highlight brushed circles
+        //         chart.selectAll("circle").filter((d) => {
+        //             return extent[0][0] > d.TUITION || d.TUITION > extent[1][0] || extent[0][1] > d.RATE || d.RATE > extent[1][1];
+        //             console.log("brushing");
+        //         }).classed("selected", true);
+        //     });
+        // }
 })
