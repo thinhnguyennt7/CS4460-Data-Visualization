@@ -1,7 +1,10 @@
 // Define global variables
-var WIDTH = 960, HEIGHT = 500;
-var SCALE = 1000, OPACITY = 0.75;
+var HEIGHT = 500;
+var SCALE = 1200, OPACITY = 0.75;
 var legendText = ["Private", "Public"];
+
+var width = d3.select(".stateMap").style('width').split("px");
+var WIDTH = Math.round(Number(width[0])) - 200;
 
 // D3 svg
 var projection = d3.geo.albersUsa().translate([WIDTH / 2, HEIGHT / 2]) // Translate to center of screen
@@ -38,15 +41,6 @@ d3.csv("./collegesLocation.csv", (data) => {
         .style("fill", () => {
             return 'rgb(69,173,168)';
         });
-
-        // Add text to state
-        // svg.selectAll("path")
-        //     .data(json.features)
-        //     .append("text")
-        //     .attr("x", 25)
-        //     .attr("y", 10)
-        //     .attr("dy", ".40em")
-        //     .text((d) => { return d.properties.name });
 
         // Not in US state
         var avoids = ["Aguadilla", "Null", "Ponce", null];
@@ -134,14 +128,14 @@ d3.csv("./collegesLocation.csv", (data) => {
         var legend = d3.select("body")
             .append('svg')
             .attr("class", "legend")
-            .attr("width", 140)
+            .attr("width", 200)
             .attr("height", 200)
             .selectAll("g")
             .data(color.domain().slice().reverse())
             .enter()
             .append("g")
             .attr("transform", (i) => {
-                return "translate(70, " + i * 30 + ")";
+                return "translate(80, " + i * 30 + ")";
             });
         legend.append("rect")
             .attr("width", 19)
