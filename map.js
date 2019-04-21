@@ -28,8 +28,8 @@ var div = d3.select("stateMap")
         .attr("class", "tooltip")
         .style("opacity", 0);
 
-d3.csv("./collegesLocation.csv", (data) => {
-    d3.json("us-states.json", (json) => {
+d3.csv("./rawDataHelper/collegesLocation.csv", (data) => {
+    d3.json("./rawDataHelper/us-states.json", (json) => {
 
         svg.selectAll("path")
         .data(json.features)
@@ -92,25 +92,7 @@ d3.csv("./collegesLocation.csv", (data) => {
             }
 
             // Main Tooltip
-            var html = '';
-            html += "<div style=\"color: " + borderColor + "\">";
-            html += "<span class=\"tooltip_bold centralize\">";
-            html += d.schoolName + "</span><br>";
-            html += "<span class=\"tooltip_bold centralize lightColor\">";
-            html += d.control + "</span>";
-            html += "<span class=\"centralize\" >";
-            html += d.state + "</span><br><hr>";
-            html += "<span class=\"tooltip_bold centralize\">";
-            html += "Admission Rate: " + d.admission + "</span><br><br>";
-            html += "<span class=\"tooltip_bold\">";
-            html += "ACT " + "</span>";
-            html += "<span class=\"tooltip_bold tooltip_float\">";
-            html += "SAT " + "</span><br>";
-            html += "<span class=\"tooltip_bold tooltip_left_5px\">";
-            html += d.act + "</span>";
-            html += "<span class=\"tooltip_bold tooltip_left_2px tooltip_float\">";
-            html += d.sat + "</span></div>";
-
+            var html = hoverViewHTMLGenerator(d, borderColor, '');
             $("#tooltip-container").html(html);
             $(this).attr("fill-opacity", "0.9");
             $("#tooltip-container").show();
