@@ -151,7 +151,7 @@ d3.csv("./collegesLocation.csv", (data) => {
 
         legend.append("text")
             .data(legendText)
-            .attr("x", 25)
+            .attr("x", 20)
             .attr("y", 10)
             .attr("dy", ".40em")
             .text((d) => { return d; });
